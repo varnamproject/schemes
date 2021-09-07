@@ -1,1 +1,3 @@
-*.vst 
+libvarnam*
+*.vst
+*.so
