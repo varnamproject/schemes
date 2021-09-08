@@ -656,14 +656,14 @@ def add_weight_column()
   db.execute "ALTER TABLE symbols ADD COLUMN weight INT"
 end
 
-def compile_scheme(scheme_path)
+def compile_scheme(scheme_path, output_path)
   file_name = File.basename(scheme_path)
   if file_name.include?(".")
     file_name = file_name.split(".")[0]
   end
 
   $vst_name = file_name + ".vst"
-  $vst_path = File.join(Dir.pwd, $vst_name)
+  $vst_path = output_path || File.join(Dir.pwd, $vst_name)
 
   if File.exists?($vst_path)
     File.delete($vst_path)
@@ -672,7 +672,7 @@ def compile_scheme(scheme_path)
   initialize_varnam_handle()
 
   puts "Compiling #{scheme_path}"
-  puts "Building #{$vst_name}"
+  puts "Building #{$vst_path}"
 
   at_exit {
     print_warnings_and_errors if _context.errors > 0
@@ -740,13 +740,20 @@ optparse = OptionParser.new do |opts|
     $options[:debug] = true
   end
 
+  $options[:output] = nil
+  opts.on('-o', '-o output_path', 'Path to output VST') do |path|
+    $options[:output] = path
+  end
+
   opts.on('-s', '-s path_to_scheme_file_path', 'Path to scheme file') do |path|
-    if File.exists? (path)
-      compile_scheme(path)
-    else
-      puts "File doesn't exist"
-    end
+    $options[:scheme] = path
   end
 end
 
 optparse.parse!
+
+if File.exists? ($options[:scheme])
+  compile_scheme($options[:scheme], $options[:output])
+else
+  puts "File doesn't exist"
+end

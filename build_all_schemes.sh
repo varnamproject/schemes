@@ -2,6 +2,5 @@
 
 schemes=("as" "bn" "gu" "hi" "kn" "ml" "ml-inscript" "mr" "ne" "or" "pa" "sa" "ta" "te")
 for f in ${schemes[@]}; do
-  cd languages/$f
-  ./compile-scheme.rb -s $f.scheme
+  ./compile-scheme.rb -s languages/$f/$f.scheme -o languages/$f/$f.vst
 done
