@@ -1,3 +1,4 @@
 libvarnam*
-*.vst
+*.vst*
 *.so
+*.zip

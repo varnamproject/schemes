@@ -70,8 +70,6 @@ for pattern, symbols in patternAndSymbols.items():
     ranks = dict(sorted(ranks.items(), key=lambda item: item[1], reverse=True))
 
     for symbol, rank in ranks.items():
-        print(pattern, rank, symbol)
-
         cur.execute("UPDATE symbols SET weight = ? WHERE pattern = ? AND value1 = ?", (rank, pattern, symbol))
 
         rank += 1

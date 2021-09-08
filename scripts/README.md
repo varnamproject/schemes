@@ -47,7 +47,7 @@ This is bad because suggestions can come out wrong. We need to normalize these v
 To normalize frequency of words between a min value (15) and max value (255), we can use this :
 
 ```
-perl frequency-normalizer.pl frequencyReport.txt 15 255
+perl frequency-normalizer.pl frequencyReport.txt 15 255 > output-report.txt
 ```
 
 ## Populate weight column in VST

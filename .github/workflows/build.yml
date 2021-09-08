@@ -12,7 +12,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+          submodules: recursive
 
       - name: Dependencies
         run: |
@@ -23,8 +27,12 @@ jobs:
           ./build_libvarnam.sh
           ./build_all_schemes.sh
 
+      - name: Make Language Zips
+        run: |
+          ./build_all_languages.sh
+
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: all-schemes
-          path: "*.vst"
+          name: all-languages
+          path: "*.zip"
