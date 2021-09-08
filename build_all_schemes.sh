@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
-for f in *.scheme; do
-  ./compile-scheme.rb -s $f
+schemes=("as" "bn" "gu" "hi" "kn" "ml" "ml-inscript" "mr" "ne" "or" "pa" "sa" "ta" "te")
+for f in ${schemes[@]}; do
+  cd languages/$f
+  ./compile-scheme.rb -s $f.scheme
 done
