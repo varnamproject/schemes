@@ -2,8 +2,8 @@
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-if [[ "$EUID" != 0 ]]; then
-  echo "Run this script as root or with sudo"
+if [[ "$EUID" == 0 ]]; then
+  echo "This script SHOULDN'T be run with sudo"
   exit
 fi
 
@@ -16,7 +16,7 @@ else
     sudo mkdir -p @INSTALL_PREFIX@/share/varnam/schemes/
     sudo cp *.vst @INSTALL_PREFIX@/share/varnam/schemes/
 
-    schemeID=$(ls *.vst)
+    schemeID=$(ls $SCRIPT_DIR/*.vst)
     schemeID=${schemeID/.vst/}
 
     echo "Installed basic $schemeID language support"

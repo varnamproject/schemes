@@ -45,7 +45,7 @@ jobs:
 
       - name: Make Language Zips
         run: |
-          ./build_all_languages.sh
+          ./build_zips.sh
 
       - name: Upload Release Binary
         uses: svenstaro/upload-release-action@v2

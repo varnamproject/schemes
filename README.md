@@ -7,9 +7,9 @@ Varnam Language support files. **DOWNLOAD YOUR LANGUAGE FILES FROM [releases](ht
 * Download your language support file from [releases](https://github.com/varnamproject/schemes/releases)
 * Extract zip
 * Open a terminal in your extracted folder
-* Run:
+* Run (DO NOT RUN WITH sudo):
 ```
-sudo ./install.sh install
+./install.sh install
 ```
 It will ask for your password, enter it. You will also be asked to import words.
 
