@@ -2,10 +2,14 @@
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-if [[ "$EUID" == 0 ]]; then
-  echo "This script SHOULDN'T be run with sudo"
+if [[ "$EUID" != 0 ]]; then
+  echo "This script should be run with sudo"
   exit
 fi
+
+schemeID=$(ls $SCRIPT_DIR/*.vst)
+schemeID=${schemeID/$SCRIPT_DIR\//}
+schemeID=${schemeID/.vst/}
 
 if [ -z "$1" ]; then
   echo "Specify install or uninstall"
@@ -16,25 +20,7 @@ else
     sudo mkdir -p @INSTALL_PREFIX@/share/varnam/schemes/
     sudo cp *.vst @INSTALL_PREFIX@/share/varnam/schemes/
 
-    schemeID=$(ls $SCRIPT_DIR/*.vst)
-    schemeID=${schemeID/.vst/}
-
     echo "Installed basic $schemeID language support"
-
-    # Install Language Packs
-
-    echo "Import words for $schemeID ? (y/N):"
-    read import
-
-    if [ "$import" == "y" ]; then
-      for vlf in ./*/*.vlf; do 
-        varnamcli -s $schemeID -import $vlf
-      done
-    else
-      echo "Not importing words"
-    fi
-
-    echo "Installation finished"
   elif [ "$1" = "uninstall" ]; then
     sudo rm "@INSTALL_PREFIX@/share/varnam/schemes/$schemeID.vst"
     sudo rmdir "@INSTALL_PREFIX@/share/varnam/schemes/"
