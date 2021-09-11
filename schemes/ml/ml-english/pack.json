@@ -1,0 +1,14 @@
+{
+  "identifier": "ml-english",
+  "name": "English words in Malayalam",
+  "description": "Words like india => ഇന്ത്യ, scene => സീൻ etc.",
+  "lang": "ml",
+  "versions": [
+    {
+      "identifier": "ml-english-1",
+      "version": 1,
+      "description": "Words with highest confidence. Approximate 1500 words",
+      "size": 144837
+    }
+  ]
+}
