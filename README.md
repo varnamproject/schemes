@@ -1,15 +1,30 @@
 # Language Files
 
-Varnam Language support files. Download from [releases](https://github.com/varnamproject/schemes/releases).
+Varnam Language support files. **DOWNLOAD YOUR LANGUAGE FILES FROM [releases](https://github.com/varnamproject/schemes/releases)**.
+
+## Installation
+
+* Download your language support file from [releases](https://github.com/varnamproject/schemes/releases)
+* Extract zip
+* Open a terminal in your extracted folder
+* Run:
+```
+sudo ./install.sh
+```
+
+Follow instructions.
+
+## Development
 
 Folder structure:
-- `languages`
+- `schemes`
   - ...
   - `ml`
     - `ml.scheme` - Scheme File
-    - `symbol-frequency-report` - Symbol Frequency Report
+    - `symbol-frequency-report.txt` - Symbol Frequency Report
     - `Other folders` - Different pack folders
   - ...
+- `install.sh.in` - A placeholder script which will be copied to every scheme folder
 
 ### Scheme
 
@@ -34,4 +49,4 @@ This file is made using scripts inside `scripts` folder. It has a README.
 
 ### Packs
 
-A language pack is a set of pre-trained **Varnam Learning Files (VLF)** that can be imported into any Varnam instance quickly. It has many words in it. It's basically a dictionary file.
+A language pack is a set of pre-trained **Varnam Learning Files (VLF)** that can be imported into any Varnam instance quickly. It has many words in it. It's basically a dictionary file to import words from.

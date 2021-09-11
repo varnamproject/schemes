@@ -3,3 +3,4 @@ libvarnam*
 *.so
 *.zip
 *.vlf
+install.sh

@@ -1,0 +1,26 @@
+ #!/usr/bin/env bash
+
+# Install Scheme
+
+sudo mkdir -p /usr/local/share/varnam/schemes/
+sudo cp *.vst /usr/local/share/varnam/schemes/
+
+schemeID=$(ls *.vst)
+schemeID=${schemeID/.vst/}
+
+echo "Installed basic $schemeID language support"
+
+# Install Language Packs
+
+echo "Import words for $schemeID ? (y/N):"
+read import
+
+if [ "$import" == "y" ]; then
+  for vlf in ./*/*.vlf; do 
+    varnamcli -s $schemeID -import $vlf
+  done
+else
+  echo "Not importing words"
+fi
+
+echo "Installation finished"
