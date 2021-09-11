@@ -9,10 +9,15 @@ Varnam Language support files. **DOWNLOAD YOUR LANGUAGE FILES FROM [releases](ht
 * Open a terminal in your extracted folder
 * Run:
 ```
-sudo ./install.sh
+sudo ./install.sh install
 ```
+It will ask for your password, enter it. You will also be asked to import words.
 
-Follow instructions.
+To check if installation is successful, try this command :
+```bash
+varnamcli -s ml enthaanu
+```
+It should give malayalam output if installation is successful.
 
 ## Development
 
