@@ -3,7 +3,9 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 if [[ "$EUID" == 0 ]]; then
-  echo "This script should NOT be run with sudo"
+  msg="This script should NOT be run with sudo"
+  echo $msg
+  notify-send $msg || true
   exit
 fi
 
@@ -17,4 +19,6 @@ for vlf in $SCRIPT_DIR/*/*.vlf; do
   varnamcli -s $schemeID -import $vlf
 done
 
-echo "Finished importing $schemeID language learnings"
+msg="Finished importing $schemeID language learnings"
+echo "$msg"
+notify-send "$msg" || true
