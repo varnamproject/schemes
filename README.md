@@ -55,3 +55,31 @@ This file is made using scripts inside `scripts` folder. It has a README.
 ### Packs
 
 A language pack is a set of pre-trained **Varnam Learning Files (VLF)** that can be imported into any Varnam instance quickly. It has many words in it. It's basically a dictionary file to import words from.
+
+### Compiling A Scheme
+
+Install dependencies:
+
+```bash
+sudo apt install ruby-ffi ruby-sqlite3
+```
+
+Compile scheme:
+
+```bash
+./compile-scheme.rb -s schemes/ta/ta.scheme -o schemes/ta/ta.vst
+```
+
+The compiled scheme will be a SQLite Database with extension ".vst".
+
+Now link the file to the place where Varnam will look for VST.
+
+```bash
+sudo ln -s $(realpath schemes/ta/ta.vst) /usr/local/share/varnam/schemes/ta.vst
+```
+
+Now Varnam can use it. Test it out :
+
+```bash
+varnamcli -s ta nandri
+```
