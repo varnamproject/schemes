@@ -16,7 +16,7 @@ if [ "$ARG1" == "install" ]; then
 
   msg="Installed basic $schemeID language support. Use import.sh for importing words"
   echo "$msg"
-  notify-send "$msg" || true
+  notify-send "$msg" &> /dev/null || true
 elif [ "$1" = "uninstall" ]; then
   sudo rm "@INSTALL_PREFIX@/share/varnam/schemes/$schemeID.vst"
   sudo rmdir "@INSTALL_PREFIX@/share/varnam/schemes/"

@@ -4,8 +4,8 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 if [[ "$EUID" == 0 ]]; then
   msg="This script should NOT be run with sudo"
-  echo $msg
-  notify-send $msg || true
+  echo "$msg"
+  notify-send "$msg" &> /dev/null || true
   exit
 fi
 
@@ -21,4 +21,4 @@ done
 
 msg="Finished importing $schemeID language learnings"
 echo "$msg"
-notify-send "$msg" || true
+notify-send "$msg" &> /dev/null || true
