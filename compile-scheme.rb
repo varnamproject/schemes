@@ -658,12 +658,7 @@ def initialize_varnam_handle()
 
   if ($options[:debug])
     puts "Turning debug on"
-    done = VarnamLibrary.varnam_debug($varnam_handle, 1)
-    if done != 0
-      error_message = VarnamLibrary.varnam_get_last_error($varnam_handle)
-      puts "Unable to turn debugging on. #{error_message}"
-      exit(1)
-    end
+    VarnamLibrary.varnam_debug($varnam_handle, 1)
   end
 end
 
