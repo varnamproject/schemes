@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# encoding: utf-8
+
 require 'optparse'
 
 '''
@@ -196,8 +198,8 @@ end
 
 def set_scheme_details()
 	d = VarnamLibrary::SchemeDetails.new
-	d[:langCode] = FFI::MemoryPointer.from_string($scheme_details[:langCode])
 	d[:identifier] = FFI::MemoryPointer.from_string($scheme_details[:identifier])
+	d[:langCode] = FFI::MemoryPointer.from_string($scheme_details[:langCode])
 	d[:displayName] = FFI::MemoryPointer.from_string($scheme_details[:displayName])
 	d[:author] = FFI::MemoryPointer.from_string($scheme_details[:author])
 	d[:compiledDate] = FFI::MemoryPointer.from_string(Time.now.to_s)
@@ -420,7 +422,7 @@ def consonants(options={}, hash)
 end
 
 def period(p)
-	_create_token({"." => p}, Varnam::VARNAM_TOKEN_PERIOD, {})
+	_create_token({"." => p}, Varnam::VARNAM_SYMBOL_PERIOD, {})
 end
 
 def tag(name, &block)
@@ -563,10 +565,10 @@ def get_dead_consonants(criteria = {})
     item = VarnamLibrary::Symbol.new(tok)
     varnam_token = VarnamSymbol.new(
       item[:Type],
-      item[:Pattern],
-      item[:Value1],
-      item[:Value2],
-      item[:Value3],
+      item[:Pattern].force_encoding('UTF-8'),
+      item[:Value1].force_encoding('UTF-8'),
+      item[:Value2].force_encoding('UTF-8'),
+      item[:Value3].force_encoding('UTF-8'),
       item[:Tag],
       item[:MatchType],
       item[:Priority],
@@ -580,6 +582,7 @@ def get_dead_consonants(criteria = {})
   return get_tokens(symbol_type, criteria)
 end
 
+# TODO warnings haven't been implemented even with libvarnam
 def print_warnings_and_errors
   if _context.warnings > 0
     _context.warning_messages.each do |msg|
@@ -655,7 +658,7 @@ def initialize_varnam_handle()
 
   if ($options[:debug])
     puts "Turning debug on"
-    done = VarnamLibrary.varnam_enable_logging($varnam_handle, Varnam::VARNAM_LOG_DEBUG, DebugCallback);
+    done = VarnamLibrary.varnam_debug($varnam_handle, 1)
     if done != 0
       error_message = VarnamLibrary.varnam_get_last_error($varnam_handle)
       puts "Unable to turn debugging on. #{error_message}"

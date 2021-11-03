@@ -27,26 +27,27 @@ module VarnamLibrary
     :Flags, :int
   end
 
-	class SchemeDetails < FFI::Struct
-		layout :langCode, :pointer,
-			:identifier, :pointer,
-			:displayName, :pointer,
-			:author, :pointer,
-			:compiledDate, :pointer,
-			:isStable, :int
-	end
+  class SchemeDetails < FFI::Struct
+    layout :identifier, :pointer,
+      :langCode, :pointer,
+      :displayName, :pointer,
+      :author, :pointer,
+      :compiledDate, :pointer,
+      :isStable, :int
+  end
 
   class Word < FFI::Struct
     layout :text, :string,
     :confidence, :int
   end
 
+  attach_function :varnam_debug, [:int, :int], :void
   attach_function :varnam_get_last_error, [:int], :string
-  attach_function :vm_init, [:string, :pointer], :int
   attach_function :varnam_set_vst_lookup_dir, [:string], :int
   attach_function :varnam_config, [:int, :int, :varargs], :int
   attach_function :varnam_search_symbol_table , [:int, :int, Symbol.by_value, :pointer], :int
 
+  attach_function :vm_init, [:string, :pointer], :int
   attach_function :vm_create_token, [:int, :string, :string, :string, :string, :string, :int, :int, :int, :int, :int], :int
   attach_function :vm_flush_buffer, [:int], :int
   attach_function :vm_set_scheme_details, [:int, :pointer], :int
