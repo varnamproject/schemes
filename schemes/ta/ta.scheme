@@ -30,7 +30,7 @@ vowels "a" => "அ",
        ["au", "ow", "ou"]  => ["ஔ", "ௌ"],
      ["q"] => "ஃ"
 
-consonants ["ka", "qa", "ga", ["ha"]] => "க",
+consonants ["ka", ["qa"], "ga", ["ha"]] => "க",
            ["nga"] =>  "ங",
            ["sa", "cha"] => "ச",
            ["ja", "za"]  => "ஜ",
@@ -75,6 +75,7 @@ get_dead_consonants.each do |dead_c|
 end
 
 infer_dead_consonants true
+ignore_duplicates true
 
 tag "chill" do
    consonants "n" => ["ன்"]

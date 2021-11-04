@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
 
+# encoding: utf-8
+
 require 'optparse'
 
 '''
 Compile a scheme file to VST
-Requires libvarnam
-TODO remove dependency on libvarnam
+Requires govarnam
+TODO remove dependency on govarnam
 '''
 
 def gem_available?(name)
@@ -154,41 +156,41 @@ def _persist_key_values(pattern, values, token_type, match_type, priority, accep
 
   tag = _context.current_tag
   tag = "" if tag.nil?
-  created = VarnamLibrary.varnam_create_token($varnam_handle.get_pointer(0), pattern, value1, value2, value3, tag, token_type, match_type, priority, accept_condition, 1)
+  created = VarnamLibrary.vm_create_token($varnam_handle, pattern, value1, value2, value3, tag, token_type, match_type, priority, accept_condition, 1)
   if created != 0
-    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle.get_pointer(0))
+    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle)
     error error_message
     return
   end
 
   _context.tokens[token_type] = [] if _context.tokens[token_type].nil?
-  vtoken = VarnamToken.new(token_type, pattern, value1, value2, value3, tag, match_type, priority, accept_condition)
+  vtoken = VarnamSymbol.new(token_type, pattern, value1, value2, value3, tag, match_type, priority, accept_condition)
   _context.tokens[token_type].push(vtoken)
   push_to_current_custom_list vtoken
 end
 
 def flush_unsaved_changes
-  saved = VarnamLibrary.varnam_flush_buffer($varnam_handle.get_pointer(0))
+  saved = VarnamLibrary.vm_flush_buffer($varnam_handle)
   if saved != 0
-    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle.get_pointer(0))
+    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle)
     error error_message
     return
   end
 end
 
 def infer_dead_consonants(infer)
-  configured = VarnamLibrary.varnam_config($varnam_handle.get_pointer(0), Varnam::VARNAM_CONFIG_USE_DEAD_CONSONANTS, :int, infer ? 1 : 0)
+  configured = VarnamLibrary.varnam_config($varnam_handle, Varnam::VARNAM_CONFIG_USE_DEAD_CONSONANTS, :int, infer ? 1 : 0)
   if configured != 0
-    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle.get_pointer(0))
+    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle)
     error error_message
     return
   end
 end
 
 def ignore_duplicates(ignore)
-  configured = VarnamLibrary.varnam_config($varnam_handle.get_pointer(0), Varnam::VARNAM_CONFIG_IGNORE_DUPLICATE_TOKEN, :int, ignore ? 1 : 0)
+  configured = VarnamLibrary.varnam_config($varnam_handle, Varnam::VARNAM_CONFIG_IGNORE_DUPLICATE_TOKEN, :int, ignore ? 1 : 0)
   if configured != 0
-    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle.get_pointer(0))
+    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle)
     error error_message
     return
   end
@@ -196,8 +198,8 @@ end
 
 def set_scheme_details()
 	d = VarnamLibrary::SchemeDetails.new
-	d[:langCode] = FFI::MemoryPointer.from_string($scheme_details[:langCode])
 	d[:identifier] = FFI::MemoryPointer.from_string($scheme_details[:identifier])
+	d[:langCode] = FFI::MemoryPointer.from_string($scheme_details[:langCode])
 	d[:displayName] = FFI::MemoryPointer.from_string($scheme_details[:displayName])
 	d[:author] = FFI::MemoryPointer.from_string($scheme_details[:author])
 	d[:compiledDate] = FFI::MemoryPointer.from_string(Time.now.to_s)
@@ -207,9 +209,9 @@ def set_scheme_details()
 		d[:isStable] = $scheme_details[:isStable]
 	end
 
-  done = VarnamLibrary.varnam_set_scheme_details($varnam_handle.get_pointer(0), d.pointer)
+  done = VarnamLibrary.vm_set_scheme_details($varnam_handle, d.pointer)
   if done != 0
-    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle.get_pointer(0))
+    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle)
     error error_message
     return
   end
@@ -277,7 +279,7 @@ def generate_cv
             end
 
 
-            _persist_key_values pattern, values, Varnam::VARNAM_TOKEN_CONSONANT_VOWEL, match_type, priority, accept_condition
+            _persist_key_values pattern, values, Varnam::VARNAM_SYMBOL_CONSONANT_VOWEL, match_type, priority, accept_condition
         end
     end
 end
@@ -411,16 +413,16 @@ end
 
 def vowels(options={}, hash)
   _ensure_sanity(hash)
-  _create_token(hash, Varnam::VARNAM_TOKEN_VOWEL, options)
+  _create_token(hash, Varnam::VARNAM_SYMBOL_VOWEL, options)
 end
 
 def consonants(options={}, hash)
   _ensure_sanity(hash)
-  _create_token(hash, Varnam::VARNAM_TOKEN_CONSONANT, options)
+  _create_token(hash, Varnam::VARNAM_SYMBOL_CONSONANT, options)
 end
 
 def period(p)
-	_create_token({"." => p}, Varnam::VARNAM_TOKEN_PERIOD, {})
+	_create_token({"." => p}, Varnam::VARNAM_SYMBOL_PERIOD, {})
 end
 
 def tag(name, &block)
@@ -431,49 +433,49 @@ end
 
 def consonant_vowel_combinations(options={}, hash)
   _ensure_sanity(hash)
-  _create_token(hash, Varnam::VARNAM_TOKEN_CONSONANT_VOWEL, options)
+  _create_token(hash, Varnam::VARNAM_SYMBOL_CONSONANT_VOWEL, options)
 end
 
 def anusvara(options={}, hash)
   _ensure_sanity(hash)
-  _create_token(hash, Varnam::VARNAM_TOKEN_ANUSVARA, options)
+  _create_token(hash, Varnam::VARNAM_SYMBOL_ANUSVARA, options)
 end
 
 def visarga(options={}, hash)
   _ensure_sanity(hash)
-  _create_token(hash, Varnam::VARNAM_TOKEN_VISARGA, options)
+  _create_token(hash, Varnam::VARNAM_SYMBOL_VISARGA, options)
 end
 
 def virama(options={}, hash)
   _ensure_sanity(hash)
-  _create_token(hash, Varnam::VARNAM_TOKEN_VIRAMA, options)
+  _create_token(hash, Varnam::VARNAM_SYMBOL_VIRAMA, options)
 end
 
 def symbols(options={}, hash)
   _ensure_sanity(hash)
-  _create_token(hash, Varnam::VARNAM_TOKEN_SYMBOL, options)
+  _create_token(hash, Varnam::VARNAM_SYMBOL_SYMBOL, options)
 end
 
 def numbers(options={}, hash)
   _ensure_sanity(hash)
-  _create_token(hash, Varnam::VARNAM_TOKEN_NUMBER, options)
+  _create_token(hash, Varnam::VARNAM_SYMBOL_NUMBER, options)
 end
 
 def others(options={}, hash)
   _ensure_sanity(hash)
-  _create_token(hash, Varnam::VARNAM_TOKEN_OTHER, options)
+  _create_token(hash, Varnam::VARNAM_SYMBOL_OTHER, options)
 end
 
 def non_joiner(hash)
   _ensure_sanity(hash)
-  _create_token(hash, Varnam::VARNAM_TOKEN_NON_JOINER);
-  $overridden_default_symbols.push Varnam::VARNAM_TOKEN_NON_JOINER
+  _create_token(hash, Varnam::VARNAM_SYMBOL_NON_JOINER);
+  $overridden_default_symbols.push Varnam::VARNAM_SYMBOL_NON_JOINER
 end
 
 def joiner(hash)
   _ensure_sanity(hash)
-  _create_token(hash, Varnam::VARNAM_TOKEN_JOINER);
-  $overridden_default_symbols.push Varnam::VARNAM_TOKEN_JOINER
+  _create_token(hash, Varnam::VARNAM_SYMBOL_JOINER);
+  $overridden_default_symbols.push Varnam::VARNAM_SYMBOL_JOINER
 end
 
 def get_tokens(token_type, criteria = {})
@@ -488,40 +490,40 @@ def get_tokens(token_type, criteria = {})
 end
 
 def get_vowels(criteria = {})
-  return get_tokens(Varnam::VARNAM_TOKEN_VOWEL, criteria)
+  return get_tokens(Varnam::VARNAM_SYMBOL_VOWEL, criteria)
 end
 
 def get_consonants(criteria = {})
-  return get_tokens(Varnam::VARNAM_TOKEN_CONSONANT, criteria)
+  return get_tokens(Varnam::VARNAM_SYMBOL_CONSONANT, criteria)
 end
 
 def get_consonant_vowel_combinations(criteria = {})
-  return get_tokens(Varnam::VARNAM_TOKEN_CONSONANT_VOWEL, criteria)
+  return get_tokens(Varnam::VARNAM_SYMBOL_CONSONANT_VOWEL, criteria)
 end
 
 def get_anusvara(criteria = {})
-  return get_tokens(Varnam::VARNAM_TOKEN_ANUSVARA, criteria)
+  return get_tokens(Varnam::VARNAM_SYMBOL_ANUSVARA, criteria)
 end
 
 def get_visarga(criteria = {})
-  return get_tokens(Varnam::VARNAM_TOKEN_VISARGA, criteria)
+  return get_tokens(Varnam::VARNAM_SYMBOL_VISARGA, criteria)
 end
 
 def get_symbols(criteria = {})
-  return get_tokens(Varnam::VARNAM_TOKEN_SYMBOL, criteria)
+  return get_tokens(Varnam::VARNAM_SYMBOL_SYMBOL, criteria)
 end
 
 def get_numbers(criteria = {})
-  return get_tokens(Varnam::VARNAM_TOKEN_OTHER, criteria)
+  return get_tokens(Varnam::VARNAM_SYMBOL_OTHER, criteria)
 end
 
 def get_chill()
-  tokens = get_tokens(Varnam::VARNAM_TOKEN_CONSONANT, {:exact => true})
+  tokens = get_tokens(Varnam::VARNAM_SYMBOL_CONSONANT, {:exact => true})
   return tokens.find_all {|t| t.tag == "chill"}
 end
 
 def get_virama
-    tokens = get_tokens(Varnam::VARNAM_TOKEN_VIRAMA, {})
+    tokens = get_tokens(Varnam::VARNAM_SYMBOL_VIRAMA, {})
     if tokens.empty?
         error 'Virama is not set'
         exit (1)
@@ -541,32 +543,46 @@ end
 
 def get_dead_consonants(criteria = {})
   # dead consonants are infered by varnam. ruby wrapper don't know anything about it.
-  token_type = Varnam::VARNAM_TOKEN_DEAD_CONSONANT
-  token_ptr = FFI::MemoryPointer.new :pointer
-  done = VarnamLibrary.varnam_get_all_tokens($varnam_handle.get_pointer(0), token_type, token_ptr);
+  symbol_type = Varnam::VARNAM_SYMBOL_DEAD_CONSONANT
+
+  search_criteria = VarnamLibrary::Symbol.new
+  search_criteria[:Type] = symbol_type
+
+  result_ptr = FFI::MemoryPointer.new :pointer
+  done = VarnamLibrary.varnam_search_symbol_table($varnam_handle, 0, search_criteria, result_ptr);
   if done != 0
-    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle.get_pointer(0))
+    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle)
     error error_message
     return
   end
 
-  size = VarnamLibrary.varray_length(token_ptr.get_pointer(0))
+  size = VarnamLibrary.varray_length(result_ptr.get_pointer(0))
   i = 0
-  _context.tokens[token_type] = [] if _context.tokens[token_type].nil?
+  _context.tokens[symbol_type] = [] if _context.tokens[symbol_type].nil?
   until i >= size
-    tok = VarnamLibrary.varray_get(token_ptr.get_pointer(0), i)
-    ptr = token_ptr.read_pointer
-    item = VarnamLibrary::Token.new(tok)
-    varnam_token = VarnamToken.new(item[:type],
-                                   ffito_string(item[:pattern]), ffito_string(item[:value1]),
-                                   ffito_string(item[:value2]), ffito_string(item[:value3]),
-                                   ffito_string(item[:tag]), item[:match_type])
-    _context.tokens[token_type].push(varnam_token)
+    tok = VarnamLibrary.varray_get(result_ptr.get_pointer(0), i)
+    ptr = result_ptr.read_pointer
+    item = VarnamLibrary::Symbol.new(tok)
+    varnam_token = VarnamSymbol.new(
+      item[:Type],
+      item[:Pattern].force_encoding('UTF-8'),
+      item[:Value1].force_encoding('UTF-8'),
+      item[:Value2].force_encoding('UTF-8'),
+      item[:Value3].force_encoding('UTF-8'),
+      item[:Tag],
+      item[:MatchType],
+      item[:Priority],
+      item[:AcceptCondition],
+      item[:Flags],
+      item[:Weight]
+    )
+    _context.tokens[symbol_type].push(varnam_token)
     i += 1
   end
-  return get_tokens(token_type, criteria)
+  return get_tokens(symbol_type, criteria)
 end
 
+# TODO warnings haven't been implemented even with libvarnam
 def print_warnings_and_errors
   if _context.warnings > 0
     _context.warning_messages.each do |msg|
@@ -583,16 +599,18 @@ end
 
 # Sets default symbols if user has not set overridden in the scheme file
 def set_default_symbols
-  non_joiner "_" => "_"  if not $overridden_default_symbols.include?(Varnam::VARNAM_TOKEN_NON_JOINER)
-  joiner "__" => "__"  if not $overridden_default_symbols.include?(Varnam::VARNAM_TOKEN_JOINER)
+  non_joiner "_" => "_"  if not $overridden_default_symbols.include?(Varnam::VARNAM_SYMBOL_NON_JOINER)
+  joiner "__" => "__"  if not $overridden_default_symbols.include?(Varnam::VARNAM_SYMBOL_JOINER)
   symbols "-" => "-"
 end
 
+# TODO
+# GoVarnam doesn't support stemming
 def _persist_stemrules(old_ending, new_ending)
   return if _context.errors > 0
-  rc = VarnamLibrary.varnam_create_stemrule($varnam_handle.get_pointer(0), old_ending, new_ending)
+  rc = VarnamLibrary.varnam_create_stemrule($varnam_handle, old_ending, new_ending)
   if rc != 0
-    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle.get_pointer(0))
+    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle)
     error error_message
   end
   return rc
@@ -609,51 +627,39 @@ def _create_stemrule(hash, options)
 end 
 
 def stemrules(hash,options={})
- # _ensure_sanity(hash)
-  _create_stemrule(hash, options) 
-  puts VarnamLibrary.varnam_get_last_error($varnam_handle.get_pointer(0))
+  # _ensure_sanity(hash)
+  # _create_stemrule(hash, options) 
+  puts VarnamLibrary.varnam_get_last_error($varnam_handle)
 end
 
 def exceptions_stem(hash, options={})
-  hash.each_pair do |key,value|
-    rc = VarnamLibrary.varnam_create_stem_exception($varnam_handle.get_pointer(0), key, value)
-    if rc != 0
-      puts "Could not create stemrule exception"
-    end
-  end
+  # hash.each_pair do |key,value|
+  #   rc = VarnamLibrary.varnam_create_stem_exception($varnam_handle, key, value)
+  #   if rc != 0
+  #     puts "Could not create stemrule exception"
+  #   end
+  # end
 end
 
 def initialize_varnam_handle()
-  # Include libvarnam bindings in ruby
+  # Include govarnam bindings in ruby
   require './varnamruby.rb'
-  $varnam_handle = FFI::MemoryPointer.new :pointer
+  varnam_handle_ptr = FFI::MemoryPointer.new :pointer
 
-  init_error_msg = FFI::MemoryPointer.new(:pointer, 1)
-  initialized = VarnamLibrary.varnam_init($vst_path, $varnam_handle, init_error_msg)
+  initialized = VarnamLibrary.vm_init($vst_path, varnam_handle_ptr)
+
+  $varnam_handle = varnam_handle_ptr.read_int
 
   if (initialized != 0)
-    ptr = init_error_msg.read_pointer()
-    msg = ptr.nil? ? "" : ptr.read_string
+    msg = VarnamLibrary.varnam_get_last_error($varnam_handle)
     puts "Varnam initialization failed #{msg}"
     exit(1)
   end
 
   if ($options[:debug])
     puts "Turning debug on"
-    done = VarnamLibrary.varnam_enable_logging($varnam_handle.get_pointer(0), Varnam::VARNAM_LOG_DEBUG, DebugCallback);
-    if done != 0
-      error_message = VarnamLibrary.varnam_get_last_error($varnam_handle.get_pointer(0))
-      puts "Unable to turn debugging on. #{error_message}"
-      exit(1)
-    end
+    VarnamLibrary.varnam_debug($varnam_handle, 1)
   end
-end
-
-def add_weight_column()
-  require "sqlite3"
-
-  db = SQLite3::Database.new $vst_path
-  db.execute "ALTER TABLE symbols ADD COLUMN weight INT"
 end
 
 def compile_scheme(scheme_path, output_path)
@@ -684,8 +690,6 @@ def compile_scheme(scheme_path, output_path)
   flush_unsaved_changes
   set_scheme_details
 
-  add_weight_column
-
   if _context.errors > 0
     returncode = 1
   else
@@ -695,14 +699,14 @@ def compile_scheme(scheme_path, output_path)
   exit(returncode)
 end
 
-def find_libvarnam
+def find_govarnam
   return $options[:library] if not $options[:library].nil?
-  # Trying to find out libvarnam in the predefined locations if
+  # Trying to find out govarnam in the predefined locations if
   # absolute path to the library is not specified
-  libvarnam_search_paths = ['.', File.dirname(File.expand_path(__FILE__)), '/usr/local/lib', '/usr/local/lib/i386-linux-gnu', '/usr/local/lib/x86_64-linux-gnu', '/usr/lib/i386-linux-gnu', '/usr/lib/x86_64-linux-gnu', '/usr/lib']
-  libvarnam_names = ['libvarnam.so', "libvarnam.so.#{$libvarnam_major_version}", 'libvarnam.dylib', 'varnam.dll']
-  libvarnam_search_paths.each do |path|
-    libvarnam_names.each do |fname|
+  govarnam_search_paths = ['.', File.dirname(File.expand_path(__FILE__)), '/usr/local/lib', '/usr/local/lib/i386-linux-gnu', '/usr/local/lib/x86_64-linux-gnu', '/usr/lib/i386-linux-gnu', '/usr/lib/x86_64-linux-gnu', '/usr/lib']
+  govarnam_names = ['libgovarnam.so', "libgovarnam.so.#{$govarnam_major_version}", 'libgovarnam.dylib', 'varnam.dll']
+  govarnam_search_paths.each do |path|
+    govarnam_names.each do |fname|
       fullpath = File.join(path, fname)
       if File.exists?(fullpath)
         return fullpath
@@ -726,7 +730,7 @@ optparse = OptionParser.new do |opts|
   end
 
   if $options[:library].nil?
-    $options[:library] = find_libvarnam
+    $options[:library] = find_govarnam
     if $options[:library].nil?
       puts "Can't find varnam shared library. Try specifying the full path using -l option"
       puts optparse

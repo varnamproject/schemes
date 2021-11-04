@@ -42,8 +42,12 @@ vowels "a" => "અ",
        ["N", "M"] => ["અં", "\u{0A82}"],
        ["AN"] => ["આ\u{0A81}", "ા\u{0A81}"],
        ["IN"] => ["ઈ\u{0A81}", "ી\u{0A81}"],
-       ["UN"] => ["ઊ\u{0A81}", "ૂ\u{0A81}"],
-       ["H"] => ["અઃ", "\u{0A83}"]
+       ["UN"] => ["ઊ\u{0A81}", "ૂ\u{0A81}"]
+
+
+ignore_duplicates true
+#vowels ["H"] => ["અઃ", "\u{0A83}"]
+ignore_duplicates false
 
 list :can_make_cluster do
 consonants "k" => "ક",
@@ -55,7 +59,7 @@ consonants "k" => "ક",
            "ch" => "ચ",
            ["Ch", ["ch"]] => "છ",
            "j" => "જ",
-           ["jh" ["j"]] => "ઝ",
+           ["jh", ["j"]] => "ઝ",
            ["NJ", ["nj"]] => "ઞ",
 
            "T" => "ટ",
