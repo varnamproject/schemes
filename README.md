@@ -37,6 +37,8 @@ A scheme file is a mapping of English characters to Indian language characters. 
 
 The scheme file is compiled to a file called Varnam Symbol Table (VST). Varnam uses VST to do transliteration. **VST IS REQUIRED** for basic language support in Varnam.
 
+[Read more on scheme](https://www.varnamproject.com/docs/adding-a-new-language)
+
 ### Symbol Frequency Report
 
 This file is used to populate `weight` column in VST
@@ -61,7 +63,7 @@ A language pack is a set of pre-trained **Varnam Learning Files (VLF)** that can
 Install dependencies:
 
 ```bash
-sudo apt install ruby-ffi ruby-sqlite3
+sudo apt install ruby-ffi
 ```
 
 Compile scheme:

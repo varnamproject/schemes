@@ -31,11 +31,10 @@ jobs:
 
       - name: Dependencies
         run: |
-          sudo apt install ruby-ffi ruby-sqlite3
+          sudo apt install ruby-ffi
 
       - name: Make Schemes
         run: |
-          ./build_libvarnam.sh
           ./build_all_schemes.sh
 
       - name: Build Packs
