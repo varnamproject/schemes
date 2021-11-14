@@ -179,7 +179,7 @@ def flush_unsaved_changes
 end
 
 def infer_dead_consonants(infer)
-  configured = VarnamLibrary.varnam_config($varnam_handle, Varnam::VARNAM_CONFIG_USE_DEAD_CONSONANTS, :int, infer ? 1 : 0)
+  configured = VarnamLibrary.varnam_config($varnam_handle, Varnam::VARNAM_CONFIG_USE_DEAD_CONSONANTS, infer ? 1 : 0)
   if configured != 0
     error_message = VarnamLibrary.varnam_get_last_error($varnam_handle)
     error error_message
@@ -188,7 +188,7 @@ def infer_dead_consonants(infer)
 end
 
 def ignore_duplicates(ignore)
-  configured = VarnamLibrary.varnam_config($varnam_handle, Varnam::VARNAM_CONFIG_IGNORE_DUPLICATE_TOKEN, :int, ignore ? 1 : 0)
+  configured = VarnamLibrary.varnam_config($varnam_handle, Varnam::VARNAM_CONFIG_IGNORE_DUPLICATE_TOKEN, ignore ? 1 : 0)
   if configured != 0
     error_message = VarnamLibrary.varnam_get_last_error($varnam_handle)
     error error_message

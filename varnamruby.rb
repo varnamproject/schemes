@@ -44,7 +44,7 @@ module VarnamLibrary
   attach_function :varnam_debug, [:int, :int], :void
   attach_function :varnam_get_last_error, [:int], :string
   attach_function :varnam_set_vst_lookup_dir, [:string], :int
-  attach_function :varnam_config, [:int, :int, :varargs], :int
+  attach_function :varnam_config, [:int, :int, :int], :int
   attach_function :varnam_search_symbol_table , [:int, :int, Symbol.by_value, :pointer], :int
 
   attach_function :vm_init, [:string, :pointer], :int
