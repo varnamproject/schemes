@@ -3,30 +3,56 @@
   "name": "Malayalam Basic",
   "description": "Words sourced from Malayalam Wikipedia. Each file has maximum 30,000 words.",
   "lang": "ml",
-  "versions": [
+  "pages_count": 8,
+  "total_words": 214614,
+  "pages": [
     {
       "identifier": "ml-basic-1",
-      "version": 1,
-      "description": "Words with highest confidence. 30,000 words",
-      "size": 1864516
+      "page": 1,
+      "description": "Words with confidence lesser than 258",
+      "size": 1785319
     },
     {
       "identifier": "ml-basic-2",
-      "version": 2,
-      "description": "Words with confidence lesser than 148.",
-      "size": 1952286
+      "page": 2,
+      "description": "Words with confidence lesser than 221",
+      "size": 1881019
     },
     {
       "identifier": "ml-basic-3",
-      "version": 3,
-      "description": "Words with confidence lesser than 99",
-      "size": 1958440
+      "page": 3,
+      "description": "Words with confidence lesser than 188",
+      "size": 1914160
     },
     {
       "identifier": "ml-basic-4",
-      "version": 4,
-      "description": "Words with confidence lesser than 24",
-      "size": 501368
+      "page": 4,
+      "description": "Words with confidence lesser than 154",
+      "size": 1944751
+    },
+    {
+      "identifier": "ml-basic-5",
+      "page": 5,
+      "description": "Words with confidence lesser than 121",
+      "size": 1963931
+    },
+    {
+      "identifier": "ml-basic-6",
+      "page": 6,
+      "description": "Words with confidence lesser than 87",
+      "size": 1969816
+    },
+    {
+      "identifier": "ml-basic-7",
+      "page": 7,
+      "description": "Words with confidence lesser than 54",
+      "size": 1969030
+    },
+    {
+      "identifier": "ml-basic-8",
+      "size": 310132,
+      "description": "Words with confidence lesser than 20",
+      "page": 8
     }
   ]
 }

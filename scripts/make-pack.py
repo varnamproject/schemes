@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import sys
 
 desc = '''
@@ -40,12 +41,28 @@ with open(packJSON, "r") as jsonFile:
 # Export
 os.system("varnamcli -s %s -export %s" % (schemeID, os.path.join(packDir, packInfo["identifier"])))
 
-for v in packInfo["versions"]:
+pageIndex = 1
+wordsCount = 0
+for v in packInfo["pages"]:
+    vlfPath = os.path.join(packDir, v["identifier"] + ".vlf")
+    vlfContents = open(vlfPath).read()
+
+    v["page"] = pageIndex
     v["size"] = os.path.getsize(
-        os.path.join(packDir, v["identifier"] + ".vlf")
+        vlfPath
     )
+
+    # Gets the first word's confidence
+    firstConfidence = re.search(r'c":(.*?),', vlfContents).group(1)
+    v["description"] = "Words with confidence lesser than " + firstConfidence
+
+    wordsCount += len(re.findall(r'"w"', vlfContents))
+    pageIndex += 1
+
+packInfo["total_words"] = wordsCount
+packInfo["pages_count"] = len(packInfo["pages"])
 
 with open(packJSON, "w") as jsonFile:
     json.dump(packInfo, jsonFile, indent=2, ensure_ascii=False)
 
-print("Finished making pack. Hopefully pack.json has the correct number of versions")
+print("Finished making pack. Hopefully pack.json has the correct number of pages")
