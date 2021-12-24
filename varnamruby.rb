@@ -10,7 +10,7 @@ require 'singleton'
 # Ruby wrapper for libvarnam
 module VarnamLibrary
   extend FFI::Library
-  ffi_lib $options[:library]
+  ffi_lib $library
 
   class Symbol < FFI::Struct
     layout :Identifier, :int,
@@ -36,16 +36,22 @@ module VarnamLibrary
       :isStable, :int
   end
 
-  class Word < FFI::Struct
-    layout :text, :string,
-    :confidence, :int
+  class Suggestion < FFI::Struct
+    layout :Word, :string,
+    :Weight, :int,
+    :LearnedOn, :int
   end
 
   attach_function :varnam_debug, [:int, :int], :void
   attach_function :varnam_get_last_error, [:int], :string
   attach_function :varnam_set_vst_lookup_dir, [:string], :int
   attach_function :varnam_config, [:int, :int, :int], :int
-  attach_function :varnam_search_symbol_table , [:int, :int, Symbol.by_value, :pointer], :int
+
+  attach_function :varnam_new_search_symbol, [:pointer], :int
+  attach_function :varnam_search_symbol_table, [:int, :int, Symbol.by_value, :pointer], :int
+
+  attach_function :varnam_init, [:string, :string, :pointer], :int
+  attach_function :varnam_transliterate, [:int, :int, :string, :pointer], :int
 
   attach_function :vm_init, [:string, :pointer], :int
   attach_function :vm_create_token, [:int, :string, :string, :string, :string, :string, :int, :int, :int, :int, :int], :int
@@ -57,7 +63,7 @@ module VarnamLibrary
 end
 
 VarnamSymbol = Struct.new(:type, :pattern, :value1, :value2, :value3, :tag, :match_type, :priority, :accept_condition, :flags, :weight)
-VarnamWord = Struct.new(:text, :confidence)
+Suggestion = Struct.new(:Word, :Weight, :LearnedOn)
 VarnamSchemeDetails = Struct.new(:langCode, :identifier, :displayName, :author, :compiledDate, :isStable)
 
 module Varnam
