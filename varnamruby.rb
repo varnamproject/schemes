@@ -52,6 +52,7 @@ module VarnamLibrary
 
   attach_function :varnam_init, [:string, :string, :pointer], :int
   attach_function :varnam_transliterate, [:int, :int, :string, :pointer], :int
+  attach_function :varnam_reverse_transliterate, [:int, :string, :pointer], :int
 
   attach_function :vm_init, [:string, :pointer], :int
   attach_function :vm_create_token, [:int, :string, :string, :string, :string, :string, :int, :int, :int, :int, :int], :int
@@ -88,6 +89,10 @@ module Varnam
   VARNAM_CONFIG_IGNORE_DUPLICATE_TOKEN = 101
   VARNAM_CONFIG_ENABLE_SUGGESTIONS = 102
   VARNAM_CONFIG_USE_INDIC_DIGITS = 103
+  VARNAM_CONFIG_SET_DICTIONARY_SUGGESTIONS_LIMIT = 104
+  VARNAM_CONFIG_SET_PATTERN_DICTIONARY_SUGGESTIONS_LIMIT = 105
+  VARNAM_CONFIG_SET_TOKENIZER_SUGGESTIONS_LIMIT = 106
+  VARNAM_CONFIG_SET_DICTIONARY_MATCH_EXACT = 107
 
   VARNAM_TOKEN_PRIORITY_HIGH = 1
   VARNAM_TOKEN_PRIORITY_NORMAL = 0

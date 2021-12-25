@@ -58,6 +58,16 @@ class VarnamInstance
     @handle = varnam_handle_ptr.read_int
   end
 
+  def config(key, value)
+    configured = VarnamLibrary.varnam_config(@handle, key, value)
+    if configured != 0
+      error_message = VarnamLibrary.varnam_get_last_error(@handle)
+      error error_message
+      return
+    end
+    true
+  end
+
   def transliterate(input)
     arr_ptr = FFI::MemoryPointer.new :pointer
     VarnamLibrary.varnam_transliterate(
@@ -81,5 +91,22 @@ class VarnamInstance
       )
     end
     sugs
+  end
+
+  def reverse_transliterate(input)
+    arr_ptr = FFI::MemoryPointer.new :pointer
+    VarnamLibrary.varnam_reverse_transliterate(
+      @handle,
+      input,
+      arr_ptr
+    )
+
+    result = []
+    size = VarnamLibrary.varray_length(arr_ptr.get_pointer(0))
+    0.upto(size - 1) do |i|
+      word_ptr = VarnamLibrary.varray_get(arr_ptr.get_pointer(0), i)
+      result.push(word_ptr.get_pointer(0).get_string(0).force_encoding('UTF-8'))
+    end
+    result
   end
 end
