@@ -37,18 +37,7 @@ jobs:
       - name: Make Schemes
         run: |
           ./build_all_schemes.sh
-
-      - name: Build Packs
+      
+      - name: Run Tests
         run: |
-          sudo ./install_all_schemes.sh
-          ./build_all_packs.sh
-
-      - name: Make Language Zips
-        run: |
-          ./build_zips.sh
-
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: all-languages
-          path: "*.zip"
+          ruby test/run.rb

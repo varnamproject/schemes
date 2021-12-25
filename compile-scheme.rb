@@ -3,23 +3,13 @@
 # encoding: utf-8
 
 require 'optparse'
+require './varnam'
 
 '''
 Compile a scheme file to VST
 Requires govarnam
 TODO remove dependency on govarnam
 '''
-
-def gem_available?(name)
-	require name
-rescue LoadError
-   false
-end
-
-if not gem_available?('ffi')
-  puts "Can't find gem - ffi. To install run '[sudo] gem install ffi'"
-  exit(1)
-end
 
 $options = {}
 
@@ -545,7 +535,9 @@ def get_dead_consonants(criteria = {})
   # dead consonants are infered by varnam. ruby wrapper don't know anything about it.
   symbol_type = Varnam::VARNAM_SYMBOL_DEAD_CONSONANT
 
-  search_criteria = VarnamLibrary::Symbol.new
+  search_symbol_ptr = FFI::MemoryPointer.new :pointer
+  VarnamLibrary.varnam_new_search_symbol(search_symbol_ptr)
+  search_criteria = VarnamLibrary::Symbol.new(search_symbol_ptr.get_pointer(0))
   search_criteria[:Type] = symbol_type
 
   result_ptr = FFI::MemoryPointer.new :pointer
@@ -641,27 +633,6 @@ def exceptions_stem(hash, options={})
   # end
 end
 
-def initialize_varnam_handle()
-  # Include govarnam bindings in ruby
-  require './varnamruby.rb'
-  varnam_handle_ptr = FFI::MemoryPointer.new :pointer
-
-  initialized = VarnamLibrary.vm_init($vst_path, varnam_handle_ptr)
-
-  $varnam_handle = varnam_handle_ptr.read_int
-
-  if (initialized != 0)
-    msg = VarnamLibrary.varnam_get_last_error($varnam_handle)
-    puts "Varnam initialization failed #{msg}"
-    exit(1)
-  end
-
-  if ($options[:debug])
-    puts "Turning debug on"
-    VarnamLibrary.varnam_debug($varnam_handle, 1)
-  end
-end
-
 def compile_scheme(scheme_path, output_path)
   file_name = File.basename(scheme_path)
   if file_name.include?(".")
@@ -675,7 +646,12 @@ def compile_scheme(scheme_path, output_path)
     File.delete($vst_path)
   end
 
-  initialize_varnam_handle()
+  $varnam_handle = initialize_vst_maker_handle($vst_path)
+
+  if $options[:verbose]
+    puts "Turning debug on"
+    VarnamLibrary.varnam_debug($varnam_handle, 1)
+  end
 
   puts "Compiling #{scheme_path}"
   puts "Building #{$vst_path}"
@@ -699,43 +675,30 @@ def compile_scheme(scheme_path, output_path)
   exit(returncode)
 end
 
-def find_govarnam
-  return $options[:library] if not $options[:library].nil?
-  # Trying to find out govarnam in the predefined locations if
-  # absolute path to the library is not specified
-  govarnam_search_paths = ['.', File.dirname(File.expand_path(__FILE__)), '/usr/local/lib', '/usr/local/lib/i386-linux-gnu', '/usr/local/lib/x86_64-linux-gnu', '/usr/lib/i386-linux-gnu', '/usr/lib/x86_64-linux-gnu', '/usr/lib']
-  govarnam_names = ['libgovarnam.so', "libgovarnam.so.#{$govarnam_major_version}", 'libgovarnam.dylib', 'varnam.dll']
-  govarnam_search_paths.each do |path|
-    govarnam_names.each do |fname|
-      fullpath = File.join(path, fname)
-      if File.exists?(fullpath)
-        return fullpath
-      end
-    end
-  end
-  return nil
-end
-
 optparse = OptionParser.new do |opts|
   opts.banner = "Usage: compile-schema options"
 
+  $options[:verbose] = false
+  opts.on('-v', '--verbose', 'Enable verbose output') do
+    $options[:verbose] = true
+  end
+
   # ability to provide varnam library name
-  $options[:library] = nil
   opts.on('-l', '--library FILE', 'Sets the varnam library') do |file|
     if not File.exist?(file)
       puts "Can't find #{file}"
       exit 1
     end
-    $options[:library] = file
+    $library = file
   end
 
   if $options[:library].nil?
-    $options[:library] = find_govarnam
-    if $options[:library].nil?
-      puts "Can't find varnam shared library. Try specifying the full path using -l option"
-      puts optparse
+    govarnam_lib = find_govarnam
+    if govarnam_lib.nil?
+      puts "Can't find govarnam shared library. Try specifying the full path using -l option"
+      exit 1
     else
-      puts "Using #{$options[:library]}" if $options[:verbose]
+      puts "Using #{$govarnam_lib}" if $options[:verbose]
     end
   end
 
