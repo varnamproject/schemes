@@ -180,12 +180,10 @@ consonants ["rva", "rwa"] => "ര്വ",
 
 # BEGIN Anusvara <-> ma complications
 
-ignore_duplicates true
 anusvara [["m"]] => ["ം","ം","മ"]
 anusvara "m_" =>  ["ം","ം","മ"]
 anusvara({:accept_if => :ends_with}, "m" => ["ം","ം","മ"])
 anusvara({:accept_if => :in_between}, "m" => ["ം","ം","മ"])
-ignore_duplicates false
 
 consonants ["ma"] => "മ"
 
