@@ -56,7 +56,7 @@ for v in packInfo["pages"]:
     firstConfidence = re.search(r'c":(.*?),', vlfContents).group(1)
     v["description"] = "Words with confidence lesser than " + firstConfidence
 
-    wordsCount += len(re.findall(r'"w"', vlfContents))
+    wordsCount += len(re.findall(r'"c"', vlfContents))
     pageIndex += 1
 
 packInfo["total_words"] = wordsCount
