@@ -3,11 +3,13 @@
   "name": "English words in Malayalam",
   "description": "Words like india => ഇന്ത്യ, scene => സീൻ etc.",
   "lang": "ml",
-  "versions": [
+  "pages_count": 1,
+  "total_words": 3039,
+  "pages": [
     {
       "identifier": "ml-english-1",
-      "version": 1,
-      "description": "Words with highest confidence. Approximate 1500 words",
+      "page": 1,
+      "description": "Words with confidence lesser than 44",
       "size": 144837
     }
   ]
