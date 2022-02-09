@@ -274,6 +274,21 @@ def generate_cv
     end
 end
 
+def delete_token(pattern: nil, value1: nil)
+  search_symbol_ptr = FFI::MemoryPointer.new :pointer
+  VarnamLibrary.varnam_new_search_symbol(search_symbol_ptr)
+  search_criteria = VarnamLibrary::Symbol.new(search_symbol_ptr.get_pointer(0))
+
+  # pattern && search_criteria.Pattern = FFI::MemoryPointer.from_string(pattern)
+  value1 && search_criteria.value1 = FFI::MemoryPointer.from_string(value1)
+
+  done = VarnamLibrary.vm_delete_token($varnam_handle, search_criteria);
+  if done != 0
+    error_message = VarnamLibrary.varnam_get_last_error($varnam_handle)
+    error error_message
+  end
+end
+
 def combine_array(array, is_pattern, replacements, current_item)
     if replacements.empty?
         error 'Replacements should be present when combining an array. This could be a bug within varnamc'

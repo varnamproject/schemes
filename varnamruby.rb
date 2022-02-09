@@ -25,6 +25,17 @@ module VarnamLibrary
     :Priority, :int,
     :AcceptCondition, :int,
     :Flags, :int
+
+    def value1=(val)
+      pos = offset_of(:Value1)  
+      if val.nil?
+        self.pointer.put_pointer(pos, FFI::MemoryPointer::NULL)
+      elsif val.is_a?(FFI::MemoryPointer)
+        self.pointer.put_pointer(pos, val)
+      else
+        fail("name= requires an FFI::MemoryPointer or nil")
+      end
+    end
   end
 
   class SchemeDetails < FFI::Struct
@@ -56,6 +67,7 @@ module VarnamLibrary
 
   attach_function :vm_init, [:string, :pointer], :int
   attach_function :vm_create_token, [:int, :string, :string, :string, :string, :string, :int, :int, :int, :int, :int], :int
+  attach_function :vm_delete_token, [:int, Symbol.by_value], :int
   attach_function :vm_flush_buffer, [:int], :int
   attach_function :vm_set_scheme_details, [:int, :pointer], :int
 

@@ -29,6 +29,7 @@ class TestML < Minitest::Test
       'ANkiLi' => 'ആൺകിളി'
     }
     list.each do |pattern, expected|
+      # TODO assert length of result array too
       assert_equal expected, @varnam.transliterate(pattern)[0].Word
     end
   end

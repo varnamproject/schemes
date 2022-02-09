@@ -192,6 +192,11 @@ consonants ["ma"] => "മ"
 # Autogenerate consonant vowel combinations
 generate_cv
 
+delete_token(
+   value1: "മ്"
+)
+consonants({:accept_if => :starts_with}, "m" => "മ്")
+
 consonants [["ru"]] => "ര്",
            [["r~", "ru"]] => "റ്",
            [["nu"]] => "ന്",
