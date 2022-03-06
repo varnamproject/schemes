@@ -6,11 +6,20 @@ class TestML < Minitest::Test
     @varnam.config(Varnam::VARNAM_CONFIG_SET_TOKENIZER_SUGGESTIONS_LIMIT, 30)
   end
 
-  def test_words
-    list = {
+  def test_basic_words
+    # TODO assert length of result array too
+    assert_hash_transliterate({
       'peN' => 'പെൺ',
+      'kiLivaathil' => 'കിളിവാതിൽ',
+      'kiLivaathilil' => 'കിളിവാതിലിൽ',
+      'thaazhvara' => 'താഴ്വര',
+      'thaazh_vara' => 'താഴ്‌വര',
+      'ANkiLi' => 'ആൺകിളി'
+    })
+  end
 
-      # BEGIN Anusvara <-> ma complications
+  def test_anusvara_ma_complications
+    assert_hash_transliterate({
       'am_bEdkar' => 'അംബേദ്കർ',
       'manam_pOle' => 'മനംപോലെ',
       'kunnamkuLam' => 'കുന്നംകുളം',
@@ -19,19 +28,25 @@ class TestML < Minitest::Test
       'mvOnE' => 'മ്വോനേ',
       'mvOnoossE' => 'മ്വോനൂസ്സേ',
       'manushyan' => 'മനുഷ്യൻ',
-      'mlEchcham' => 'മ്ലേച്ചം',
-      # END Anusvara <-> ma complications
+      'mlEchcham' => 'മ്ലേച്ചം'
+    })
+  end
 
-      'kiLivaathil' => 'കിളിവാതിൽ',
-      'kiLivaathilil' => 'കിളിവാതിലിൽ',
-      'thaazhvara' => 'താഴ്വര',
-      'thaazh_vara' => 'താഴ്‌വര',
-      'ANkiLi' => 'ആൺകിളി'
-    }
-    list.each do |pattern, expected|
-      # TODO assert length of result array too
-      assert_equal expected, @varnam.transliterate(pattern)[0].Word
-    end
+  def test_chil_and_words
+    assert_hash_transliterate({
+      'alpam' => 'അല്പം',
+      'l' => 'ൽ',
+      'lakkiTi' => 'ലക്കിടി',
+      'kuyil' => 'കുയിൽ'
+    })
+
+    assert_hash_transliterate({
+      'aaScharyam' => 'ആശ്ചര്യം',
+      'r' => 'ർ',
+      'raakkiLi' => 'രാക്കിളി',
+      'payar' => 'പയർ',
+      'ervin' => 'എര്വിൻ'
+    })
   end
 
   def test_reverse_transliteration
@@ -41,6 +56,12 @@ class TestML < Minitest::Test
 
     list.each do |word, expected|
       assert_equal expected, @varnam.reverse_transliterate(word)
+    end
+  end
+
+  def assert_hash_transliterate(list)
+    list.each do |pattern, expected|
+      assert_equal expected, @varnam.transliterate(pattern)[0].Word
     end
   end
 end

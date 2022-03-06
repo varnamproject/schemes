@@ -68,6 +68,7 @@ consonants ["ka"] => "ക",
            ["pha", "fa", "Fa"] => "ഫ",
            "ba" => "ബ",
            "bha" => "ഭ",
+           "la" => "ല",
            ["va", "wa"] => "വ",
            ["Sa", ["sha", "sa"]] => "ശ",
            ["sa", "za"] => "സ",
@@ -160,7 +161,6 @@ consonants ["ra"] => "ര",
            [["ra"], "Ra"] => "റ",
            ["na"] => "ന",
            [["na"], "Na"] => "ണ",
-           ["la"] => "ല",
            [["la"], "La"] => "ള"
 
 infer_dead_consonants true
@@ -196,6 +196,14 @@ delete_token(
    value1: "മ്"
 )
 consonants({:accept_if => :starts_with}, "m" => "മ്")
+
+{"l" => "ല"}.each do |key, value|
+   value_with_anusvara = "#{value}്"
+   delete_token(
+      value1: value_with_anusvara
+   )
+   consonants({:accept_if => :in_between}, key => value_with_anusvara)
+end
 
 consonants [["ru"]] => "ര്",
            [["r~", "ru"]] => "റ്",
