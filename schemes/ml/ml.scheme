@@ -68,11 +68,13 @@ consonants ["ka"] => "ക",
            ["pha", "fa", "Fa"] => "ഫ",
            "ba" => "ബ",
            "bha" => "ഭ",
+           "ra" => "ര",
            "la" => "ല",
            ["va", "wa"] => "വ",
            ["Sa", ["sha", "sa"]] => "ശ",
            ["sa", "za"] => "സ",
-           "ha" => "ഹ"
+           "ha" => "ഹ",
+           [["ra"], "Ra"] => "റ"
 
 consonants({:accept_if => :starts_with}, ["ca"] => "ക")
 
@@ -124,7 +126,7 @@ consonants "ya" => "യ",
            "zha" => "ഴ",
            ["xa", ["Xa"]] => "ക്സ",
            "ksha" => "ക്ഷ",
-	   "nka" => "ങ്ക",
+	         "nka" => "ങ്ക",
            ["ncha", ["nja"]] => "ഞ്ച",
            "ntha" => "ന്ത",
            "nta" => "ന്റ",
@@ -157,19 +159,13 @@ consonants "ya" => "യ",
 # Don't need to infer dead consonants because removing 'a' from pattern will make what is mapped for chill
 infer_dead_consonants false
 
-consonants ["ra"] => "ര",
-           [["ra"], "Ra"] => "റ",
-           ["na"] => "ന",
+consonants ["na"] => "ന",
            [["na"], "Na"] => "ണ",
            [["la"], "La"] => "ള"
 
 infer_dead_consonants true
 
-consonants ["rva", "rwa"] => "ര്വ",
-           "rya" => "ര്യ",
-           ["Rva", "Rwa", ["rva"]] => "റ്വ്",
-           ["Rya", ["rya"]] => "റ്യ്",
-           ["nva", "nwa"] => "ന്വ",
+consonants ["nva", "nwa"] => "ന്വ",
            "nya" => "ന്യ",
            ["Nva", "Nwa", ["nva", "nwa"]] => "ണ്വ",
            ["Nya", ["nya"]] => "ണ്യ",
@@ -197,7 +193,11 @@ delete_token(
 )
 consonants({:accept_if => :starts_with}, "m" => "മ്")
 
-{"l" => "ല"}.each do |key, value|
+{
+   "l" => "ല",
+   "r" => "ര",
+   "R" => "റ",
+}.each do |key, value|
    value_with_anusvara = "#{value}്"
    delete_token(
       value1: value_with_anusvara
@@ -205,14 +205,10 @@ consonants({:accept_if => :starts_with}, "m" => "മ്")
    consonants({:accept_if => :in_between}, key => value_with_anusvara)
 end
 
-consonants [["ru"]] => "ര്",
-           [["r~", "ru"]] => "റ്",
-           [["nu"]] => "ന്",
+consonants [["nu"]] => "ന്",
            [["n~", "nu"]] => "ണ്",
            [["lu"]] => "ല്",
            [["l~", "lu"]] => "ള്",
-           ["r~"] => "ര്",
-           ["R~"] => "റ്",
            ["n~"] => "ന്",
            ["N~"] => "ണ്",
            ["l~"] => "ല്",
