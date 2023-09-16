@@ -22,7 +22,7 @@ def find_govarnam
   govarnam_search_paths.each do |path|
     govarnam_names.each do |fname|
       fullpath = File.join(path, fname)
-      if File.exists?(fullpath)
+      if File.exist?(fullpath)
         $library = fullpath
         return $library
       end
