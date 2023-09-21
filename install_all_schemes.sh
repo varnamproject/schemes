@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-sudo mkdir -p /usr/local/share/varnam/schemes/
+SUDO=${SUDO:-sudo}
+PREFIX=/usr/local
+
+"${SUDO}" mkdir -p "${PREFIX}/share/varnam/schemes/"
 for scheme in schemes/*/*.vst; do
   echo $scheme;
-  sudo cp $scheme /usr/local/share/varnam/schemes/
+  "${SUDO}" cp $scheme "${PREFIX}/share/varnam/schemes/"
 done
