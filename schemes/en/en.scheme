@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+##
+# Copyright (C) 2023 Subin Siby
+#
+# This is part of Varnam. See LICENSE for the license
+#
+# This was created for olam.in to implement autocomplete
+# for English dictionary via Varnam API.
+#
+# But by using the VST from this scheme,
+# Varnam can be used to show English word
+# suggestions while typing English.
+##
+
+language_code "en"
+identifier "en"
+display_name "English"
+author "Subin Siby"
+stable true
+
+
+("a"..."z").to_a.each do |letter|
+   consonants letter => letter
+end
