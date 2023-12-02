@@ -14,9 +14,12 @@ author "Rohit Bansal"
 ignore_duplicates false
 
 $virama = "\u{094D}"
-$am = "\u{0902}"
-$an = "\u{0901}"
+$am = "\u{0902}"   #not working as expected
+$an = "\u{0901}"   #not working as expected
 $nukta = "\u{093C}"
+$chandrabindu = "ँ"
+$anusvara = "ं"
+$visarga ="ः"
 
 virama "~" => "\u{094D}"
 
@@ -59,7 +62,8 @@ consonants "k" => "क",
            "ng" =>  "ङ",                   
            
            "ch" => "च",
-           ["CH", ["ch"]] => "छ",
+           "chh" => "छ",
+           ["Ch", ["ch"]] => "छ",
            "j"  => "ज",  
            ["z", ["j"]] => ["\u{095B}", "ज#{$nukta}"],
            ["jh", ["j"]] => "झ",
@@ -149,7 +153,8 @@ consonants "kShN" => "क्ष्ण", #tikShN
            "spr" => "स्प्र",
            "smr" => "स्म्र",
            "Shtr" => "ष्त्र",
-           "Shthy" => "ष्थ्य"
+           "Shthy" => "ष्थ्य",
+           "gny" => "ज्ञ"
 
 ignore_duplicates true
 can_make_cluster.each do |c1|
@@ -186,7 +191,10 @@ end
 symbols [["n", "m"]] => $an,
         ["om"] => "ॐ",
         ["?"] => "ॽ",
-        ["|"] => "।"
+        ["|"] => "।",
+        ["*"] => $anusvara,
+        ["**"] => $chandrabindu,
+        ["H"] => $visarga
 
 symbols({:priority => :low}, ["aan", "aam"] => $an)
 
