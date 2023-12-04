@@ -24,3 +24,6 @@ stable true
 ("a"..."z").to_a.each do |letter|
    consonants letter => letter
 end
+
+# To show autocomplete for phrases that has spaces
+consonants " " => " "
