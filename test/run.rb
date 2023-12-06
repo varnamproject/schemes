@@ -25,3 +25,4 @@ end
 require "minitest/autorun"
 require_relative './ml'
 require_relative './hi'
+require_relative './ne'
