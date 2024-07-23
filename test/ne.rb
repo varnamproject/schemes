@@ -12,9 +12,17 @@ class TestNe < Minitest::Test
       'pitaa' => 'पिता',
       'prastuti' => 'प्रस्तुति',
       'kaaThamaanDau' => 'काठमान्डौ',
-      # not working vowel+vowel combinations
+      # vowel+vowel combinations
       'euTaa' => 'एउटा',
-      'aaimaai' => 'आइमाइ'
+      'aaimaai' => 'आइमाइ',
+      # half letters
+      'purva' => 'पुर्व',
+      'hunchha' => 'हुन्छ',
+      'dantya' => 'दन्त्य',
+      # change half letters to full at word end
+      'asar' => 'असर',
+      'pasal' => 'पसल',
+      'baagh' => 'बाघ' # multi letter consonant not working. still need to type "baagha"
     }
     list.each do |pattern, expected|
       # TODO assert length of result array too
