@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 schemes=("as" "bn" "gu" "hi" "kn" "ml" "ml-inscript" "mr" "ne" "or" "pa" "sa" "ta" "te")
 for schemeID in ${schemes[@]}; do
   for packDir in schemes/$schemeID/*/ ; do

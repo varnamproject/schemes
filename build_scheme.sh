@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 f=$1
 vst=schemes/$f/$f.vst
 ./compile-scheme.rb -s schemes/$f/$f.scheme -o $vst
