@@ -192,7 +192,7 @@ def set_scheme_details()
 	d[:langCode] = FFI::MemoryPointer.from_string($scheme_details[:langCode])
 	d[:displayName] = FFI::MemoryPointer.from_string($scheme_details[:displayName])
 	d[:author] = FFI::MemoryPointer.from_string($scheme_details[:author])
-	d[:compiledDate] = FFI::MemoryPointer.from_string(Time.now.to_s)
+	d[:compiledDate] = FFI::MemoryPointer.from_string(ENV['SOURCE_DATE_EPOCH'] || Time.now.to_s)
 	if $scheme_details[:isStable].nil?
 		d[:isStable] = 0
 	else
