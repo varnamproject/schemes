@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 SUDO=${SUDO:-sudo}
 PREFIX=/usr/local
 
