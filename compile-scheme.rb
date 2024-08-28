@@ -657,7 +657,7 @@ def compile_scheme(scheme_path, output_path)
   $vst_name = file_name + ".vst"
   $vst_path = output_path || File.join(Dir.pwd, $vst_name)
 
-  if File.exists?($vst_path)
+  if File.exist?($vst_path)
     File.delete($vst_path)
   end
 
@@ -734,7 +734,7 @@ end
 
 optparse.parse!
 
-if File.exists? ($options[:scheme])
+if File.exist? ($options[:scheme])
   compile_scheme($options[:scheme], $options[:output])
 else
   puts "File doesn't exist"
