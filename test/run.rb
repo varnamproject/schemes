@@ -13,9 +13,12 @@ def get_varnam_handle(scheme_id)
     exit 1
   end
 
+  scheme_path = ENV['TEST_SCHEME_PATH'] ||
+      "#{__dir__}/../schemes/#{scheme_id}"
+
   learnings_file = Tempfile.new('learnings_file')
   $handles[scheme_id] = VarnamInstance.new(
-    "#{__dir__}/../schemes/#{scheme_id}/#{scheme_id}.vst",
+    "#{scheme_path}/#{scheme_id}.vst",
     learnings_file.path
   )
 
