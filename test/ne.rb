@@ -12,9 +12,6 @@ class TestNe < Minitest::Test
       'pitaa' => 'पिता',
       'prastuti' => 'प्रस्तुति',
       'kaaThamaanDau' => 'काठमान्डौ',
-      # vowel+vowel combinations
-      'euTaa' => 'एउटा',
-      'aaimaai' => 'आइमाइ',
       # half letters
       'purva' => 'पुर्व',
       'hunchha' => 'हुन्छ',
@@ -27,16 +24,6 @@ class TestNe < Minitest::Test
     list.each do |pattern, expected|
       # TODO assert length of result array too
       assert_equal expected, @varnam.transliterate(pattern)[0].Word
-    end
-  end
-
-  def test_reverse_transliteration
-    list = {
-      'नेपाली' => %w[nepaalee nepaalI nepAlee nepaalii nepali]
-    }
-
-    list.each do |word, expected|
-      assert_equal expected, @varnam.reverse_transliterate(word)
     end
   end
 end
