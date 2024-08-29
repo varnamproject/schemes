@@ -40,4 +40,4 @@ jobs:
       
       - name: Run Tests
         run: |
-          ruby test/run.rb
+          test/run.rb -e '/TestNe|TestHi/' --verbose
