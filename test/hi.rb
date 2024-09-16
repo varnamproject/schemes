@@ -8,8 +8,8 @@ class TestHi < Minitest::Test
 
   def test_words
     list = {
-      'kithaab' => 'किताब',
-      'pithaa' => 'पिता'
+      'kitaab' => 'किताब',
+      'pitaa' => 'पिता'
     }
     list.each do |pattern, expected|
       # TODO assert length of result array too
