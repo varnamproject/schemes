@@ -1,0 +1,130 @@
+# encoding: utf-8
+
+##
+# Copyright (C) Prateek Kumar Baheti
+#
+# This is part of libvarnam. See LICENSE.txt for the license
+##
+
+language_code "saz"
+identifier "saz"
+display_name "saurashtra"
+author "Nans MJ Dur"
+stable true
+
+ignore_duplicates false
+
+$virama = "\u{A8C4}"
+$am = "\u{A880}"
+$an = "\u{A881}"
+$nukta = "\u{A8B4}"
+
+virama "~" => $virama
+period "\u{A8CE}"
+
+visarga "H" => "\u{A8C5}"
+
+vowels "a" => "\u{A882}",
+       ["aa", "A", ["a"]]  => ["\u{A883}", "\u{A8B5}"],
+       "i" => ["\u{A884}", "\u{A8B6}"],
+       ["ee", "I", "ii", ["i"]]   => ["\u{A885}", "\u{A8B7}"],
+       "u" => ["\u{A886}", "\u{A8B8}"],
+       ["uu", "oo", "U", ["u"]]   => ["\u{A887}", "\u{A8B9}"],
+       [["ri", "ru", "r"], "R"] => ["\u{A888}", "\u{A8BA}"],
+       "e" => ["\u{A88C}", "\u{A8BE}"],
+       ["ai", "ei"] => ["\u{A88E}", "\u{A8C0}"],
+       "o" => ["\u{A88F}", "\u{A8C1}"],
+       "O" => ["\u{A88F}", "\u{A8C1}"],
+       ["ou", "au", "ow"]  => ["\u{A890}", "\u{A8C3}"],
+       ["aN", "aM"] => ["\u{A880}", "\u{A8B5}"],
+       ["aH"] => ["\u{A8C5}", "\u{A8C5}"]
+
+list :can_make_cluster do
+consonants "k" => "\u{A892}",
+           [["k"], "q"] => ["\u{A898}", "\u{A892}#{$nukta}"],
+           ["kh", ["gh"]] => "\u{A893}",
+           [["kh"], "KH"] => ["\u{A899}", "\u{A893}#{$nukta}"],
+           ["gh", ["kh"]] => "\u{A895}",
+           ["T", ["t"]] => "\u{A89C}",
+           ["Th"] => "\u{A89D}",
+           ["D", ["d"]] => "\u{A89E}",
+           [["d"], "dd"] => ["\u{A8A1}", "\u{A89E}#{$nukta}"],
+           "d" => "\u{A8A2}",
+           ["Dh"] => "\u{A8A3}",
+           "DH" => ["\u{A8A4}", "\u{A8A3}#{$nukta}"],
+           "p" => "\u{A8A6}",
+           "ph" => "\u{A8A7}",
+           "b" => "\u{A8A8}",
+           "bh" => "\u{A8A9}",
+           ["t"] => "\u{A8A1}",
+           ["th", ["dh"]] => "\u{A8A2}",
+           "g" => "\u{A894}",
+           ["G"] => ["\u{A8A0}", "\u{A894}#{$nukta}"],
+           ["j"] => "\u{A899}",
+           "ng" => "\u{A896}",
+           "ch" => "\u{A8CA}",
+           ["CH", ["ch"]] => "\u{A8CB}",
+           ["jh"] => "\u{A8CC}",
+           ["nj"] => "\u{A8B5}",
+           ["N"] => "\u{A8A1}",
+           ["dh"] => "\u{A8A4}",
+           ["n"] => "\u{A8A6}",
+           "r" => ["\u{A8AC}", "\u{A8AC}#{$virama}"],
+           "l" => ["\u{A8AD}", "\u{A8AD}#{$virama}"],
+           ["v", "w"] => "\u{A8AE}",
+           ["sh", ["s"]] => "\u{A8AF}",
+           ["Sh", ["sh"]] => "\u{A8B0}",
+           ["h"] => "\u{A8B1}",
+           ["z"] => "\u{A8A9}#{$nukta}",
+           ["s"] => "\u{A8B2}",
+           "f" => ["\u{A8A9}", "\u{A8A7}#{$nukta}"],
+           "y" => "\u{A8A8}",
+           [["y"], "YY"] => ["\u{A8A7}", "\u{A8A8}#{$nukta}"]
+end
+
+ignore_duplicates true
+can_make_cluster.each do |c1|
+   can_make_cluster.each do |c2|
+     if c1.match_type == 1
+        consonants ["#{c1.pattern}#{c2.pattern}"] => ["#{c1.value1}#{$virama}#{c2.value1}"]
+     else
+        consonants [["#{c1.pattern}#{c2.pattern}"]] => ["#{c1.value1}#{$virama}#{c2.value1}"]
+     end 
+   end
+end
+
+# Half forms for म
+consonants(combine can_make_cluster, ["m*"] => ["\u{A8AB}#{$virama}*1"])
+
+generate_cv
+
+consonants(combine get_consonants, ["*a"] => ["*1"])
+
+ignore_duplicates false
+
+consonants [["m"]] => "\u{A8AB}"
+
+# Need to replace this when we have a way to pass value2 and value3 in combine
+get_vowels.each do |vowel|
+  if vowel.match_type == 1
+     consonant_vowel_combinations ["m#{vowel.pattern}"] => ["\u{A8AB}#{vowel.value2}"]
+  else
+     consonant_vowel_combinations [["m#{vowel.pattern}"]] => ["\u{A8AB}#{vowel.value2}"]
+  end
+end
+symbols ["m", ["n"]] => $am,
+        [["n", "m"]] => $an,
+        ["|"] => "\u{A8CE}"
+
+symbols({:priority => :low}, ["aan", "aam"] => $an)
+
+numbers "0" => "\u{A8D0}",
+        "1" => "\u{A8D1}",
+        "2" => "\u{A8D2}",
+        "3" => "\u{A8D3}",
+        "4" => "\u{A8D4}",
+        "5" => "\u{A8D5}",
+        "6" => "\u{A8D6}",
+        "7" => "\u{A8D7}",
+        "8" => "\u{A8D8}",
+        "9" => "\u{A8D9}"
