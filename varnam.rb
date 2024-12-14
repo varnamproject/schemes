@@ -6,6 +6,8 @@ rescue LoadError
   false
 end
 
+require 'rbconfig'
+
 if not gem_available?('ffi')
   puts "Can't find gem - ffi. To install run '[sudo] gem install ffi'"
   exit(1)
@@ -17,7 +19,12 @@ def find_govarnam
 
   # Trying to find out govarnam in the predefined locations if
   # absolute path to the library is not specified
-  govarnam_search_paths = ['.', File.dirname(File.expand_path(__FILE__)), '/usr/local/lib', '/usr/local/lib/i386-linux-gnu', '/usr/local/lib/x86_64-linux-gnu', '/usr/lib/i386-linux-gnu', '/usr/lib/x86_64-linux-gnu', '/usr/lib']
+  arch = RbConfig::CONFIG['arch']
+  govarnam_search_paths = ['.', File.dirname(File.expand_path(__FILE__)),
+                           '/usr/local/lib',
+                           "/usr/local/lib/#{arch}",
+                           "/usr/lib/#{arch}",
+                           '/usr/lib']
   govarnam_names = ['libgovarnam.so', "libgovarnam.so.#{$govarnam_major_version}", 'libgovarnam.dylib', 'varnam.dll']
   govarnam_search_paths.each do |path|
     govarnam_names.each do |fname|
